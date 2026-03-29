@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VaakAI — Detailed Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B2B;
+    --deep-orange: #E84A00;
+    --ink: #0D0B08;
+    --cream: #F5EFE0;
+    --gold: #D4A843;
+    --teal: #1A7A6E;
+    --teal-light: #26B5A3;
+    --dusty: #8B7355;
+    --paper: #FAF6ED;
+    --char: #1C1A16;
+    --muted: rgba(245,239,224,0.55);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Noto Serif', serif;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR NAV ── */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: rgba(13,11,8,0.97);
+    border-right: 1px solid rgba(245,239,224,0.06);
+    padding: 32px 0;
+    display: flex; flex-direction: column;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .sidebar-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.3rem;
+    color: var(--saffron);
+    padding: 0 28px 32px;
+    border-bottom: 1px solid rgba(245,239,224,0.06);
+    margin-bottom: 24px;
+  }
+  .sidebar-logo span { color: var(--cream); }
+  .sidebar-logo small {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; color: var(--dusty);
+    font-weight: 400; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-top: 4px;
+  }
+
+  .sidebar-nav { flex: 1; overflow-y: auto; }
+  .nav-section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dusty);
+    padding: 8px 28px 4px;
+    margin-top: 16px;
+  }
+  .sidebar-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: rgba(245,239,224,0.5);
+    text-decoration: none; letter-spacing: 0.04em;
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .sidebar-link:hover, .sidebar-link.active {
+    color: var(--cream);
+    border-left-color: var(--saffron);
+    background: rgba(255,107,43,0.05);
+  }
+  .sidebar-link .dot {
+    width: 5px; height: 5px;
+    background: currentColor; border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  .sidebar-back {
+    padding: 20px 28px 0;
+    border-top: 1px solid rgba(245,239,224,0.06);
+  }
+  .back-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; color: var(--dusty);
+    text-decoration: none; letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--saffron); }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: 240px;
+    padding: 0;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    padding: 80px 80px 60px;
+    border-bottom: 1px solid rgba(245,239,224,0.06);
+    background: linear-gradient(135deg, rgba(255,107,43,0.05) 0%, transparent 50%, rgba(26,122,110,0.04) 100%);
+    position: relative; overflow: hidden;
+  }
+  .page-header::before {
+    content: 'भारत';
+    position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+    font-size: 18rem; font-weight: 900;
+    color: rgba(255,107,43,0.03);
+    font-family: 'Syne', sans-serif;
+    line-height: 1;
+    pointer-events: none;
+    letter-spacing: -0.05em;
+  }
+
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,107,43,0.1);
+    border: 1px solid rgba(255,107,43,0.3);
+    padding: 5px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.64rem; letter-spacing: 0.14em;
+    color: var(--saffron); text-transform: uppercase;
+    margin-bottom: 24px;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 800; line-height: 1.0;
+    letter-spacing: -0.03em;
+    max-width: 640px;
+    margin-bottom: 20px;
+  }
+  .page-title em { font-style: normal; color: var(--saffron); }
+
+  .page-subtitle {
+    font-size: 1rem; line-height: 1.75;
+    color: var(--muted);
+    max-width: 560px;
+  }
+
+  /* ── CONTENT AREA ── */
+  .content {
+    max-width: 900px;
+    padding: 0 80px 120px;
+  }
+
+  /* ── SECTIONS ── */
+  .doc-section {
+    padding: 72px 0 0;
+    border-top: 1px solid rgba(245,239,224,0.06);
+    margin-top: 60px;
+  }
+  .doc-section:first-child { border-top: none; margin-top: 0; padding-top: 72px; }
+
+  .section-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.64rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--teal-light);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-eyebrow::before { content:''; width:24px; height:1px; background:var(--teal-light); }
+
+  .doc-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 28px;
+  }
+
+  .doc-section p {
+    font-size: 0.97rem; line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .doc-section p strong { color: var(--cream); font-weight: 700; }
+  .doc-section p em { font-style: italic; color: var(--gold); }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    background: rgba(255,107,43,0.06);
+    border: 1px solid rgba(255,107,43,0.2);
+    border-left: 3px solid var(--saffron);
+    padding: 24px 28px;
+    margin: 28px 0;
+  }
+  .highlight-box p { margin-bottom: 0; color: rgba(245,239,224,0.75); font-size: 0.95rem; }
+  .highlight-box strong { color: var(--saffron); }
+
+  .teal-box {
+    background: rgba(26,122,110,0.08);
+    border: 1px solid rgba(38,181,163,0.2);
+    border-left: 3px solid var(--teal-light);
+    padding: 24px 28px;
+    margin: 28px 0;
+  }
+  .teal-box p { margin-bottom: 0; color: rgba(245,239,224,0.75); font-size: 0.95rem; }
+
+  /* ── METRIC CARDS ── */
+  .metric-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin: 32px 0;
+  }
+  .metric-card {
+    background: rgba(245,239,224,0.03);
+    border: 1px solid rgba(245,239,224,0.08);
+    padding: 24px 20px;
+    text-align: center;
+    transition: border-color 0.3s;
+  }
+  .metric-card:hover { border-color: rgba(255,107,43,0.3); }
+  .metric-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    color: var(--saffron); line-height: 1;
+    margin-bottom: 8px;
+  }
+  .metric-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.1em;
+    color: var(--dusty); text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  /* ── LANGUAGE TABLE ── */
+  .lang-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 0.88rem;
+  }
+  .lang-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--dusty);
+    text-align: left; padding: 10px 16px;
+    border-bottom: 1px solid rgba(245,239,224,0.1);
+  }
+  .lang-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(245,239,224,0.05);
+    color: var(--muted);
+  }
+  .lang-table tr:hover td { background: rgba(255,107,43,0.03); color: var(--cream); }
+  .lang-name-cell { font-weight: 700; color: var(--cream) !important; }
+  .lang-script { font-size: 1.3rem; }
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.08em;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+  .pill-green { background: rgba(38,181,163,0.15); color: var(--teal-light); }
+  .pill-gold { background: rgba(212,168,67,0.15); color: var(--gold); }
+  .pill-orange { background: rgba(255,107,43,0.15); color: var(--saffron); }
+
+  /* ── ARCHITECTURE DIAGRAM ── */
+  .arch-diagram {
+    background: rgba(245,239,224,0.02);
+    border: 1px solid rgba(245,239,224,0.08);
+    padding: 40px;
+    margin: 32px 0;
+  }
+
+  .arch-flow {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 4px; flex-wrap: nowrap;
+  }
+
+  .arch-box {
+    flex: 1;
+    background: rgba(13,11,8,0.8);
+    border: 1px solid rgba(245,239,224,0.1);
+    padding: 16px 12px;
+    text-align: center;
+    min-width: 0;
+  }
+  .arch-box.orange { border-color: rgba(255,107,43,0.4); background: rgba(255,107,43,0.05); }
+  .arch-box.teal { border-color: rgba(38,181,163,0.35); background: rgba(38,181,163,0.05); }
+  .arch-box.gold { border-color: rgba(212,168,67,0.35); background: rgba(212,168,67,0.05); }
+
+  .arch-icon { font-size: 1.5rem; margin-bottom: 8px; display: block; }
+  .arch-service {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.1em;
+    text-transform: uppercase; opacity: 0.5;
+    margin-bottom: 4px;
+  }
+  .arch-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem; font-weight: 700;
+    color: var(--cream);
+  }
+
+  .arch-arrow {
+    font-size: 1rem; color: var(--saffron);
+    opacity: 0.5; flex-shrink: 0;
+    padding: 0 4px;
+  }
+
+  /* ── NUMBERED LIST ── */
+  .num-list { list-style: none; margin: 24px 0; }
+  .num-list li {
+    display: flex; gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(245,239,224,0.05);
+    font-size: 0.94rem; line-height: 1.7;
+    color: var(--muted);
+  }
+  .num-list li:last-child { border-bottom: none; }
+  .num-list .num {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem; font-weight: 800;
+    color: var(--saffron);
+    background: rgba(255,107,43,0.1);
+    border: 1px solid rgba(255,107,43,0.25);
+    width: 32px; height: 32px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+
+  /* ── BONUS SECTION ── */
+  .bonus-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin: 28px 0;
+  }
+  .bonus-card {
+    background: rgba(212,168,67,0.04);
+    border: 1px solid rgba(212,168,67,0.2);
+    padding: 20px;
+    transition: border-color 0.3s;
+  }
+  .bonus-card:hover { border-color: rgba(212,168,67,0.5); }
+  .bonus-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--gold); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bonus-card p {
+    font-size: 0.82rem; color: rgba(245,239,224,0.5);
+    margin-bottom: 0; line-height: 1.6;
+  }
+
+  /* ── QUOTE ── */
+  .pull-quote {
+    margin: 40px 0;
+    padding: 32px 40px;
+    border-left: 3px solid var(--gold);
+    background: rgba(212,168,67,0.04);
+    position: relative;
+  }
+  .pull-quote::before {
+    content: '"';
+    position: absolute; top: -8px; left: 28px;
+    font-size: 5rem; color: var(--gold); opacity: 0.2;
+    font-family: 'Noto Serif', serif; line-height: 1;
+  }
+  .pull-quote p {
+    font-size: 1.1rem; font-style: italic;
+    color: rgba(245,239,224,0.8); line-height: 1.7;
+    margin-bottom: 12px !important;
+  }
+  .pull-quote cite {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; color: var(--dusty);
+    letter-spacing: 0.1em; font-style: normal;
+  }
+
+  /* ── SCROLLSPY ── */
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: rgba(255,107,43,0.3); border-radius: 2px; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .page-header, .content { padding-left: 24px; padding-right: 24px; }
+    .arch-flow { flex-direction: column; }
+    .arch-arrow { transform: rotate(90deg); }
+    .metric-row { grid-template-columns: 1fr 1fr; }
+    .bonus-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">Vaak<span>AI</span><small>Detailed Overview</small></div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Context</div>
+    <a href="#context" class="sidebar-link active"><span class="dot"></span>Context</a>
+    <a href="#impact" class="sidebar-link"><span class="dot"></span>Real-World Impact</a>
+    <a href="#languages" class="sidebar-link"><span class="dot"></span>Language Landscape</a>
+
+    <div class="nav-section-title">Building VaakAI</div>
+    <a href="#what-build" class="sidebar-link"><span class="dot"></span>What We're Building</a>
+    <a href="#architecture" class="sidebar-link"><span class="dot"></span>Architecture</a>
+
+  </nav>
+
+  <div class="sidebar-back">
+    <a href="index.html" class="back-link">← Back to Landing</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="header-badge">Multilingual Voice AI · 2025</div>
+    <h1 class="page-title">Building Voice AI for <em>1.4 Billion</em> People</h1>
+    <p class="page-subtitle">A complete technical and contextual overview of the multilingual voice AI system — and what it means to solve it for India.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- CONTEXT -->
+    <section class="doc-section" id="context">
+      <div class="section-eyebrow">Background & Context</div>
+      <h2>India's voice AI problem is a civilizational gap</h2>
+
+      <p>India is home to <strong>1.4 billion people</strong> who collectively speak 22 officially recognized languages and hundreds of regional dialects. From Kashmiri in the north to Tamil in the south, from Gujarati in the west to Bengali in the east, India's linguistic diversity is extraordinary — and it is precisely this diversity that today's voice AI systems have failed to serve.</p>
+
+      <p>The overwhelming majority of voice AI infrastructure was built with English as the primary — often exclusive — language of interaction. Systems trained on western speech corpora perform poorly on Indian English alone, let alone on Hindi, Tamil, Telugu, Kannada, or the code-mixed registers that form the natural communication patterns of hundreds of millions of Indians.</p>
+
+      <div class="highlight-box">
+        <p><strong>The core problem:</strong> Rural and semi-urban users — who represent the next billion internet users — are locked out of voice-first services because existing systems cannot understand the way Indians naturally speak. This is not a small edge case. This is the majority use case.</p>
+      </div>
+
+      <p>Consider what this means in practice: a farmer in Uttar Pradesh trying to access crop insurance via phone, a homemaker in Tamil Nadu attempting to use a voice assistant for her first digital banking transaction, a fisherman in Andhra Pradesh navigating a government welfare portal. Each of these users speaks their native language — often mixed with local dialect markers — and encounters a system that responds with confusion or silence.</p>
+
+      <div class="pull-quote">
+        <p>Language is not just a feature. For India's next internet users, it is the gateway to digital participation itself.</p>
+        <cite>— VaakAI Brief, 2025</cite>
+      </div>
+    </section>
+
+    <!-- IMPACT -->
+    <section class="doc-section" id="impact">
+      <div class="section-eyebrow">Real-World Impact</div>
+      <h2>The scale of what's at stake</h2>
+
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-num">90%</div>
+          <div class="metric-desc">India's internet users prefer local language content</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">$40B</div>
+          <div class="metric-desc">Voice commerce market projection by 2030</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">500M+</div>
+          <div class="metric-desc">New internet users onboarding primarily via voice</div>
+        </div>
+      </div>
+
+      <p>Voice commerce in India is projected to reach <strong>$40 billion by 2030</strong> — but only if the underlying infrastructure can actually communicate with the people who need it. This is a market that cannot be unlocked through an English-only or even "English-plus-Hindi" approach.</p>
+
+      <p>The downstream impact spans every critical sector of modern life. <strong>Banking and financial services</strong> remain inaccessible to first-generation smartphone users who lack English fluency. <strong>Healthcare triage systems</strong> cannot serve patients in rural Rajasthan or coastal Karnataka. <strong>Government services</strong> — from ration card management to pension disbursement — require human intermediaries that add cost, delay, and corruption risk.</p>
+
+      <div class="teal-box">
+        <p>A multilingual voice AI system that truly understands Indian languages can unlock access to banking, healthcare, government services, and e-commerce for <strong>hundreds of millions of underserved users</strong>. This is not incremental improvement — it is transformative access.</p>
+      </div>
+
+      <p>The opportunity is especially acute in <em>voice commerce</em>, where the combination of JioPhone penetration, UPI adoption, and growing comfort with digital transactions has created a ready market. The missing piece is a voice layer that understands how real Indians talk — not how English-educated urban Indians speak to their Siri.</p>
+    </section>
+
+    <!-- LANGUAGES -->
+    <section class="doc-section" id="languages">
+      <div class="section-eyebrow">Language Landscape</div>
+      <h2>Not just many languages — many ways of speaking</h2>
+
+      <p>Understanding the challenge requires appreciating the <strong>qualitative diversity</strong> of Indian speech, not just the quantitative count of languages. Each major language has significant dialectal variation — Bengali spoken in Kolkata differs substantially from the Bengali of rural Sylhet or coastal Chittagong. Tamil spoken in Chennai sounds different from Madurai or Jaffna.</p>
+
+      <table class="lang-table">
+        <thead>
+          <tr>
+            <th>Script</th>
+            <th>Language</th>
+            <th>Speakers</th>
+            <th>Key Region</th>
+            <th>Code-Mix Form</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lang-script">हि</td>
+            <td class="lang-name-cell">Hindi</td>
+            <td>~600M</td>
+            <td>North, Central India</td>
+            <td><span class="pill pill-orange">Hinglish</span></td>
+          </tr>
+          <tr>
+            <td class="lang-script">த</td>
+            <td class="lang-name-cell">Tamil</td>
+            <td>~80M (India)</td>
+            <td>Tamil Nadu, Sri Lanka</td>
+            <td><span class="pill pill-orange">Tanglish</span></td>
+          </tr>
+          <tr>
+            <td class="lang-script">తె</td>
+            <td class="lang-name-cell">Telugu</td>
+            <td>~95M</td>
+            <td>Andhra, Telangana</td>
+            <td><span class="pill pill-gold">Tenglish</span></td>
+          </tr>
+          <tr>
+            <td class="lang-script">ಕ</td>
+            <td class="lang-name-cell">Kannada</td>
+            <td>~55M</td>
+            <td>Karnataka</td>
+            <td><span class="pill pill-gold">Kanglish</span></td>
+          </tr>
+          <tr>
+            <td class="lang-script">বা</td>
+            <td class="lang-name-cell">Bengali</td>
+            <td>~230M</td>
+            <td>West Bengal, Bangladesh</td>
+            <td><span class="pill pill-green">Benglish</span></td>
+          </tr>
+          <tr>
+            <td class="lang-script">मर</td>
+            <td class="lang-name-cell">Marathi</td>
+            <td>~95M</td>
+            <td>Maharashtra</td>
+            <td><span class="pill pill-green">Minglish</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>The challenge of <strong>code-mixed speech</strong> — commonly called Hinglish, Tanglish, or Kanglish — deserves special attention. Code-switching is not a linguistic error or an artifact of poor education. It is the natural, primary register of hundreds of millions of urban and peri-urban Indians. A customer service agent that treats "Mujhe ek naya SIM card chahiye for my new phone" as malformed input has fundamentally misunderstood its user base.</p>
+    </section>
+
+    <!-- WHAT YOU BUILD -->
+    <section class="doc-section" id="what-build">
+      <div class="section-eyebrow">The Vision</div>
+      <h2>What we're building</h2>
+
+      <p>VaakAI is a <strong>multilingual voice AI system optimized for Indian languages and dialects</strong>. The system handles real customer interactions — not just transcription — across Hindi, Tamil, Telugu, Kannada, Bengali, and other regional languages, including their code-mixed variants.</p>
+
+      <p>The system handles the <em>full conversational arc</em>: it listens to a user speaking in their preferred language, identifies that language automatically (even if it changes mid-conversation), understands the intent behind what was said, generates an appropriate culturally-aware response, and delivers that response in the same language with natural-sounding speech.</p>
+
+      <ul class="num-list">
+        <li>
+          <span class="num">01</span>
+          <div><strong style="color:var(--cream)">Language detection:</strong> The system automatically identifies the speaker's language without requiring any prior configuration. This includes identifying code-mixed speech and routing it appropriately rather than failing.</div>
+        </li>
+        <li>
+          <span class="num">02</span>
+          <div><strong style="color:var(--cream)">Mid-conversation switching:</strong> Users switch languages naturally — sometimes within a single sentence. The system detects these switches in real time and adapts its response language accordingly.</div>
+        </li>
+        <li>
+          <span class="num">03</span>
+          <div><strong style="color:var(--cream)">Accurate comprehension:</strong> Beyond transcription, the system understands intent — what the user is trying to accomplish — in each supported language, with culturally appropriate nuance.</div>
+        </li>
+        <li>
+          <span class="num">04</span>
+          <div><strong style="color:var(--cream)">Natural voice response:</strong> Text-to-speech output sounds natural in the target language, with appropriate prosody and intonation — not robotic transliterated English.</div>
+        </li>
+        <li>
+          <span class="num">05</span>
+          <div><strong style="color:var(--cream)">Cultural appropriateness:</strong> Responses respect cultural norms — forms of address, honorifics, contextual formality levels — that vary significantly across Indian language communities.</div>
+        </li>
+      </ul>
+    </section>
+
+
+    <!-- ARCHITECTURE -->
+    <section class="doc-section" id="architecture">
+      <div class="section-eyebrow">System Architecture</div>
+      <h2>End-to-end pipeline design</h2>
+
+      <p>A well-designed multilingual voice AI system is not simply a sequential pipeline — it is a routing architecture where language detection gates every downstream decision. Here is the reference architecture:</p>
+
+      <div class="arch-diagram">
+        <div class="arch-flow">
+          <div class="arch-box orange">
+            <span class="arch-icon">🎙️</span>
+            <div class="arch-service">Input</div>
+            <div class="arch-label">Voice Capture</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box orange">
+            <span class="arch-icon">📝</span>
+            <div class="arch-service">Amazon Transcribe</div>
+            <div class="arch-label">STT</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box teal">
+            <span class="arch-icon">🔍</span>
+            <div class="arch-service">Comprehend / Custom</div>
+            <div class="arch-label">Lang Detect</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box teal">
+            <span class="arch-icon">🧠</span>
+            <div class="arch-service">Amazon Bedrock</div>
+            <div class="arch-label">NLU + Response</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box gold">
+            <span class="arch-icon">🔊</span>
+            <div class="arch-service">Amazon Polly</div>
+            <div class="arch-label">TTS Output</div>
+          </div>
+        </div>
+      </div>
+
+      <p>The <strong>language detection layer</strong> is the critical differentiator in this architecture. It must handle three distinct cases: (1) <em>monolingual utterances</em> in a single Indian language, (2) <em>code-mixed utterances</em> where words from two or more languages appear in a single statement, and (3) <em>language switches</em> where the user changes language between turns in a conversation.</p>
+
+      <p>For code-mixed speech specifically, we recommend a token-level language identification approach rather than utterance-level classification. This allows the system to correctly tag "Mujhe ek <span style="color:var(--saffron)">good</span> doctor <span style="color:var(--saffron)">chahiye</span>" with per-token language markers that downstream models can use for more accurate processing.</p>
+
+      <div class="teal-box">
+        <p><strong>Architecture tip:</strong> Design your Bedrock prompt templates to be language-parameterized. Each language should have a culturally adapted system prompt that encodes appropriate formality levels, greeting conventions, and domain vocabulary — not just a translated version of an English prompt.</p>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  // Scrollspy
+  const links = document.querySelectorAll('.sidebar-link');
+  const sections = document.querySelectorAll('.doc-section');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

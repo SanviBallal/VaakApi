@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VaakAI — Voice for Bharat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B2B;
+    --deep-orange: #E84A00;
+    --ink: #0D0B08;
+    --cream: #F5EFE0;
+    --gold: #D4A843;
+    --teal: #1A7A6E;
+    --teal-light: #26B5A3;
+    --dusty: #8B7355;
+    --paper: #FAF6ED;
+    --char: #1C1A16;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Noto Serif', serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(13,11,8,0.95), transparent);
+    backdrop-filter: blur(4px);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.4rem;
+    color: var(--saffron);
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--cream); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem; color: var(--dusty);
+    text-decoration: none; letter-spacing: 0.12em;
+    text-transform: uppercase; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cream); }
+  .nav-cta {
+    background: var(--saffron) !important;
+    color: var(--ink) !important;
+    padding: 8px 20px;
+    font-weight: 700 !important;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    position: relative;
+    padding: 120px 48px 80px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(255,107,43,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(26,122,110,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, rgba(212,168,67,0.04) 0%, transparent 70%);
+  }
+
+  /* Waveform decoration */
+  .waveform {
+    position: absolute; bottom: 60px; left: 0; right: 0;
+    height: 80px; opacity: 0.15;
+    display: flex; align-items: center; justify-content: center; gap: 3px;
+  }
+  .waveform span {
+    display: inline-block;
+    width: 3px; background: var(--saffron);
+    border-radius: 2px;
+    animation: wave 1.4s ease-in-out infinite;
+  }
+  @keyframes wave {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(3); }
+  }
+
+  .hero-inner {
+    max-width: 1100px; width: 100%;
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+
+  .hero-left {}
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,107,43,0.1);
+    border: 1px solid rgba(255,107,43,0.3);
+    padding: 6px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.14em;
+    color: var(--saffron); text-transform: uppercase;
+    margin-bottom: 28px;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: var(--saffron); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 4.4rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    color: var(--cream);
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--saffron);
+    display: block;
+  }
+  h1 .teal { color: var(--teal-light); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: rgba(245,239,224,0.65);
+    max-width: 440px;
+    margin-bottom: 40px;
+  }
+
+  .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--saffron);
+    color: var(--ink);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 0.9rem;
+    padding: 14px 32px;
+    text-decoration: none;
+    display: inline-block;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .btn-primary:hover { background: var(--deep-orange); transform: translateY(-2px); }
+
+  .btn-secondary {
+    color: var(--cream);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    padding: 14px 28px;
+    text-decoration: none;
+    border: 1px solid rgba(245,239,224,0.2);
+    display: inline-block;
+    letter-spacing: 0.06em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--saffron); color: var(--saffron); }
+
+  /* ── RIGHT SIDE LANGUAGE ORBS ── */
+  .hero-right {
+    position: relative; height: 480px;
+  }
+
+  .lang-grid {
+    position: relative; width: 100%; height: 100%;
+  }
+
+  .lang-bubble {
+    position: absolute;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-radius: 50%;
+    border: 1px solid;
+    transition: transform 0.3s;
+    cursor: default;
+    text-align: center;
+  }
+  .lang-bubble:hover { transform: scale(1.08) !important; }
+
+  .lang-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    opacity: 0.75;
+  }
+  .lang-native {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .lang-speakers {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem; opacity: 0.5;
+    margin-top: 2px;
+  }
+
+  .b1 { width:140px;height:140px; top:10%; left:28%; background:rgba(255,107,43,0.08); border-color:rgba(255,107,43,0.35); color:var(--saffron); animation:float1 5s ease-in-out infinite; }
+  .b2 { width:110px;height:110px; top:5%; left:60%; background:rgba(26,122,110,0.1); border-color:rgba(38,181,163,0.35); color:var(--teal-light); animation:float2 6s ease-in-out infinite; }
+  .b3 { width:120px;height:120px; top:40%; left:5%; background:rgba(212,168,67,0.08); border-color:rgba(212,168,67,0.35); color:var(--gold); animation:float3 7s ease-in-out infinite; }
+  .b4 { width:130px;height:130px; top:42%; left:55%; background:rgba(255,107,43,0.06); border-color:rgba(255,107,43,0.25); color:rgba(255,107,43,0.8); animation:float1 5.5s ease-in-out infinite reverse; }
+  .b5 { width:95px;height:95px; top:72%; left:25%; background:rgba(26,122,110,0.08); border-color:rgba(38,181,163,0.25); color:var(--teal-light); animation:float2 4.5s ease-in-out infinite; }
+  .b6 { width:105px;height:105px; top:68%; left:62%; background:rgba(212,168,67,0.06); border-color:rgba(212,168,67,0.25); color:var(--gold); animation:float3 6.5s ease-in-out infinite reverse; }
+
+  /* Connection lines */
+  .connect-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; opacity: 0.1;
+  }
+
+  @keyframes float1 { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-14px)} }
+  @keyframes float2 { 0%,100%{transform:translateY(-8px)} 50%{transform:translateY(8px)} }
+  @keyframes float3 { 0%,100%{transform:translateY(4px)} 50%{transform:translateY(-10px)} }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    border-top: 1px solid rgba(245,239,224,0.08);
+    border-bottom: 1px solid rgba(245,239,224,0.08);
+    background: rgba(245,239,224,0.03);
+    padding: 32px 48px;
+    display: flex; justify-content: center; gap: 0;
+  }
+  .stat-item {
+    flex: 1; max-width: 240px;
+    padding: 0 40px;
+    border-right: 1px solid rgba(245,239,224,0.08);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.4rem; font-weight: 800;
+    color: var(--saffron);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.12em;
+    color: var(--dusty); text-transform: uppercase;
+  }
+
+  /* ── PROBLEM SECTION ── */
+  .problem-section {
+    padding: 100px 48px;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.18em;
+    color: var(--teal-light); text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 32px; height: 1px; background: var(--teal-light);
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+    margin-top: 60px;
+  }
+
+  .problem-card {
+    padding: 36px;
+    border: 1px solid rgba(245,239,224,0.08);
+    background: rgba(245,239,224,0.02);
+    position: relative;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .problem-card:hover {
+    border-color: rgba(255,107,43,0.3);
+    background: rgba(255,107,43,0.04);
+  }
+  .problem-card::before {
+    content: attr(data-num);
+    position: absolute; top: -16px; left: 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.2em;
+    background: var(--saffron); color: var(--ink);
+    padding: 3px 10px;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .card-icon { font-size: 2rem; margin-bottom: 16px; }
+  .problem-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 12px; color: var(--cream);
+  }
+  .problem-card p {
+    font-size: 0.92rem; line-height: 1.7;
+    color: rgba(245,239,224,0.55);
+  }
+
+  /* ── SOLUTION TEASER ── */
+  .solution-section {
+    padding: 80px 48px;
+    background: rgba(26,122,110,0.05);
+    border-top: 1px solid rgba(38,181,163,0.1);
+    border-bottom: 1px solid rgba(38,181,163,0.1);
+  }
+  .solution-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center;
+  }
+
+  .pipeline {
+    display: flex; flex-direction: column; gap: 0;
+  }
+
+  .pipe-step {
+    display: flex; gap: 20px; align-items: flex-start;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(245,239,224,0.06);
+    position: relative;
+  }
+  .pipe-step:last-child { border-bottom: none; }
+
+  .pipe-icon {
+    width: 44px; height: 44px; flex-shrink: 0;
+    background: rgba(255,107,43,0.08);
+    border: 1px solid rgba(255,107,43,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .pipe-step:nth-child(even) .pipe-icon {
+    background: rgba(26,122,110,0.1);
+    border-color: rgba(38,181,163,0.25);
+  }
+
+  .pipe-text strong {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--cream); margin-bottom: 4px;
+  }
+  .pipe-text span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; color: var(--dusty);
+  }
+
+  .pipe-arrow {
+    position: absolute; left: 22px; bottom: -12px;
+    font-size: 0.8rem; color: var(--saffron); z-index: 1;
+    opacity: 0.4;
+  }
+
+  .solution-right h2 { margin-bottom: 20px; }
+  .solution-right p {
+    font-size: 0.95rem; line-height: 1.8;
+    color: rgba(245,239,224,0.6);
+    margin-bottom: 32px;
+  }
+
+  .lang-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 36px;
+  }
+  .lang-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.08em;
+    padding: 5px 14px;
+    border: 1px solid rgba(212,168,67,0.3);
+    color: var(--gold);
+    background: rgba(212,168,67,0.05);
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+  .lang-tag.code-mixed {
+    border-color: rgba(38,181,163,0.35);
+    color: var(--teal-light);
+    background: rgba(38,181,163,0.05);
+  }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    padding: 120px 48px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,107,43,0.1) 0%, transparent 70%);
+  }
+  .cta-section h2 {
+    position: relative; z-index: 2;
+    max-width: 640px; margin: 0 auto 20px;
+  }
+  .cta-section p {
+    position: relative; z-index: 2;
+    color: rgba(245,239,224,0.55);
+    font-size: 1rem; max-width: 440px;
+    margin: 0 auto 40px;
+    line-height: 1.75;
+  }
+  .cta-actions {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; gap: 16px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid rgba(245,239,224,0.06);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; color: var(--saffron);
+    font-size: 1.1rem;
+  }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; color: var(--dusty);
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero-right { height: 300px; }
+    .stats-strip { padding: 24px; flex-wrap: wrap; gap: 24px; }
+    .stat-item { border-right: none; }
+    .problem-section { padding: 60px 24px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .solution-section { padding: 60px 24px; }
+    .solution-inner { grid-template-columns: 1fr; gap: 40px; }
+    .cta-section { padding: 80px 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Vaak<span>AI</span></div>
+  <div class="nav-links">
+    <a href="overview.html" class="nav-cta">Full Overview →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="waveform" id="waveform"></div>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Voice AI · 2025
+      </div>
+      <h1>
+        Voice AI<br>
+        <em>for Bharat,</em>
+        <span class="teal">by Bharat</span>
+      </h1>
+      <p class="hero-sub">
+        1.4 billion people. 22 official languages. Hundreds of dialects. Yet most voice AI speaks only English. We're changing that.
+      </p>
+      <div class="hero-actions">
+        <a href="overview.html" class="btn-primary">Explore VaakAI</a>
+        <a href="overview.html#what-build" class="btn-secondary">See What We're Building →</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <svg class="connect-svg" viewBox="0 0 460 480" fill="none">
+        <line x1="200" y1="90" x2="300" y2="50" stroke="white" stroke-width="1"/>
+        <line x1="200" y1="90" x2="90" y2="210" stroke="white" stroke-width="1"/>
+        <line x1="300" y1="50" x2="310" y2="210" stroke="white" stroke-width="1"/>
+        <line x1="90" y1="210" x2="310" y2="210" stroke="white" stroke-width="1"/>
+        <line x1="90" y1="210" x2="170" y2="370" stroke="white" stroke-width="1"/>
+        <line x1="310" y1="210" x2="320" y2="350" stroke="white" stroke-width="1"/>
+      </svg>
+
+      <div class="lang-bubble b1">
+        <div class="lang-native">हि</div>
+        <div class="lang-name">Hindi</div>
+        <div class="lang-speakers">600M speakers</div>
+      </div>
+      <div class="lang-bubble b2">
+        <div class="lang-native">த</div>
+        <div class="lang-name">Tamil</div>
+        <div class="lang-speakers">80M speakers</div>
+      </div>
+      <div class="lang-bubble b3">
+        <div class="lang-native">తె</div>
+        <div class="lang-name">Telugu</div>
+        <div class="lang-speakers">95M speakers</div>
+      </div>
+      <div class="lang-bubble b4">
+        <div class="lang-native">ಕ</div>
+        <div class="lang-name">Kannada</div>
+        <div class="lang-speakers">55M speakers</div>
+      </div>
+      <div class="lang-bubble b5">
+        <div class="lang-native">বা</div>
+        <div class="lang-name">Bengali</div>
+        <div class="lang-speakers">230M speakers</div>
+      </div>
+      <div class="lang-bubble b6">
+        <div class="lang-native">Hi+</div>
+        <div class="lang-name">Hinglish</div>
+        <div class="lang-speakers">code-mixed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-num">1.4B</div>
+    <div class="stat-label">People Locked Out</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">90%</div>
+    <div class="stat-label">Prefer Local Language</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">$40B</div>
+    <div class="stat-label">Voice Commerce by 2030</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">22+</div>
+    <div class="stat-label">Official Languages</div>
+  </div>
+</div>
+
+<!-- PROBLEM SECTION -->
+<section class="problem-section">
+  <div class="section-tag">The Problem</div>
+  <h2>English-first AI is<br>not India-first AI</h2>
+
+  <div class="problem-grid">
+    <div class="problem-card" data-num="01">
+      <div class="card-icon">🗣️</div>
+      <h3>Language Exclusion at Scale</h3>
+      <p>Most voice AI systems understand English well but fail catastrophically with Hindi, Tamil, Telugu, and other Indian languages — especially with dialectal variations and accents that differ by district.</p>
+    </div>
+    <div class="problem-card" data-num="02">
+      <div class="card-icon">🌐</div>
+      <h3>Code-Mixed Speech Reality</h3>
+      <p>Indians naturally switch between languages mid-sentence — Hinglish, Tanglish, Kanglish. Existing systems treat this as noise or error, when it's actually the primary way hundreds of millions communicate.</p>
+    </div>
+    <div class="problem-card" data-num="03">
+      <div class="card-icon">🏥</div>
+      <h3>Critical Services Gated</h3>
+      <p>Banking, healthcare, and government services remain inaccessible to rural users. A farmer in Bihar or a fisherman in Tamil Nadu cannot access digital services designed for English speakers.</p>
+    </div>
+    <div class="problem-card" data-num="04">
+      <div class="card-icon">📈</div>
+      <h3>Billion-Dollar Opportunity Missed</h3>
+      <p>India's next 500 million internet users will onboard via voice, not typing. The $40B voice commerce market is unreachable without language-inclusive infrastructure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION TEASER -->
+<section class="solution-section" id="solution">
+  <div class="solution-inner">
+    <div class="solution-left">
+      <div class="section-tag">The Pipeline</div>
+      <div class="pipeline">
+        <div class="pipe-step">
+          <div class="pipe-icon">🎙️</div>
+          <div class="pipe-text">
+            <strong>Speech Capture</strong>
+            <span>Amazon Transcribe · Indian Language Support</span>
+          </div>
+          <div class="pipe-arrow">↓</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-icon">🔍</div>
+          <div class="pipe-text">
+            <strong>Language Detection Layer</strong>
+            <span>Auto-detect · Code-mix handling · Dialect routing</span>
+          </div>
+          <div class="pipe-arrow">↓</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-icon">🧠</div>
+          <div class="pipe-text">
+            <strong>Multilingual Understanding</strong>
+            <span>Amazon Bedrock · Cultural context · Intent mapping</span>
+          </div>
+          <div class="pipe-arrow">↓</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-icon">🔊</div>
+          <div class="pipe-text">
+            <strong>Voice Response</strong>
+            <span>Amazon Polly · Indian language TTS · Natural prosody</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution-right">
+      <div class="section-tag">What We're Building</div>
+      <h2>A voice agent that truly speaks Indian</h2>
+      <p>A multilingual voice AI system that automatically detects the user's language and responds in kind — handling code-mixed speech, regional dialects, and culturally appropriate responses.</p>
+
+      <div class="lang-tags">
+        <span class="lang-tag">हिन्दी Hindi</span>
+        <span class="lang-tag">தமிழ் Tamil</span>
+        <span class="lang-tag">తెలుగు Telugu</span>
+        <span class="lang-tag">ಕನ್ನಡ Kannada</span>
+        <span class="lang-tag">বাংলা Bengali</span>
+        <span class="lang-tag code-mixed">Hinglish 🔀</span>
+        <span class="lang-tag code-mixed">Tanglish 🔀</span>
+      </div>
+
+      <a href="overview.html" class="btn-primary">Read Full Overview</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="section-tag" style="justify-content:center; margin-bottom:16px">Ready to Build?</div>
+  <h2>Give a voice to the next billion users</h2>
+  <p>India's voice AI revolution starts with you. Build the system that finally understands Bharat.</p>
+  <div class="cta-actions">
+    <a href="overview.html" class="btn-primary">Full Technical Overview</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VaakAI</div>
+  <div class="footer-copy">2025 · MULTILINGUAL VOICE AI FOR INDIA</div>
+</footer>
+
+<script>
+  // Generate waveform bars
+  const wf = document.getElementById('waveform');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('span');
+    const h = Math.random() * 60 + 10;
+    s.style.height = h + 'px';
+    s.style.animationDelay = (Math.random() * 1.4) + 's';
+    s.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
+    s.style.opacity = Math.random() * 0.5 + 0.2;
+    wf.appendChild(s);
+  }
+</script>
+</body>
+</html>
